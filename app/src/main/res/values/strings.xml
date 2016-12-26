@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">CS496_Assignment_1</string>
+    <string name="test_string">The First Test</string>
 </resources>
