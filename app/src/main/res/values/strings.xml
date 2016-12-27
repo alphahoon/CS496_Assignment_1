@@ -4,4 +4,6 @@
     <string name="tab1_string">This is Tab 1</string>
     <string name="tab2_string">This is Tab 2</string>
     <string name="tab3_string">This is Tab 3</string>
+    <string name="loadContacts">Load Contacts</string>
+    <string name="loadJSON">Load JSON</string>
 </resources>
