@@ -3,4 +3,7 @@
     <string name="test_string">The First Test</string>
     <string name="loadContacts">Load Contacts</string>
     <string name="loadJSON">Load JSON</string>
+    <string name="imageInputHint">Input an image URL</string>
+    <string name="getImageButton">GET IMAGE!</string>
+    <string name="imageViewAlt">Image Viewer</string>
 </resources>
