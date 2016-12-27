@@ -85,31 +85,28 @@ public class TabFragment1 extends Fragment {
     }
 
     public void readContact(Context context) {
-
         Cursor cursor = context.getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, null, null, null);
         if (cursor != null) {
-            cursor.moveToFirst();
+            if(cursor.moveToFirst()) {
+                do {
+                    int id_idx = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.CONTACT_ID);
+                    int name_idx = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME);
+                    int mobile_idx = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER);
 
-            while (cursor.moveToNext()) {
-                int id_idx = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.CONTACT_ID);
-                int name_idx = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME);
-                int mobile_idx = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER);
+                    String id = cursor.getString(id_idx);
+                    String name = cursor.getString(name_idx);
+                    String mobile = cursor.getString(mobile_idx);
 
-                String id = cursor.getString(id_idx);
-                String name = cursor.getString(name_idx);
-                String mobile = cursor.getString(mobile_idx);
+                    HashMap<String, String> contact = new HashMap<>();
+                    contact.put("id", id);
+                    contact.put("name", name);
+                    contact.put("mobile", mobile);
 
-                HashMap<String, String> contact = new HashMap<>();
-                contact.put("id", id);
-                contact.put("name", name);
-                contact.put("mobile", mobile);
-
-                System.out.println("id: " + id + " / name : " + name + " / mobile : " + mobile);
-                contactList.add(contact);
+                    System.out.println("id: " + id + " / name : " + name + " / mobile : " + mobile);
+                    contactList.add(contact);
+                } while (cursor.moveToNext());
             }
-
-            if (cursor != null)
-                cursor.close();
+            cursor.close();
         }
         displayList();
     }
