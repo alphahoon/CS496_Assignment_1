@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">CS496_Assignment_1</string>
     <string name="test_string">The First Test</string>
+    <string name="tab1_string">This is Tab 1</string>
+    <string name="tab2_string">This is Tab 2</string>
+    <string name="tab3_string">This is Tab 3</string>
 </resources>
