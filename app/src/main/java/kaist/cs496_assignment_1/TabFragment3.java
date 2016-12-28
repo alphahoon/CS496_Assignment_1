@@ -22,6 +22,7 @@ import java.io.FileOutputStream;
 import java.net.URL;
 
 import static android.R.attr.bitmap;
+import static android.webkit.URLUtil.*;
 import static kaist.cs496_assignment_1.MyApplication.save_number;
 import static kaist.cs496_assignment_1.MyApplication.stored_bmp;
 
@@ -61,8 +62,7 @@ public class TabFragment3 extends Fragment {
         public void onClick(View v) {
             String url = imgURL.getText().toString();
             if (!url.startsWith("http://") && !url.startsWith("https://"))
-                url = "https://technofriends.files.wordpress.com/2008/07/google-test-framework.png";
-                //url = "http://".concat(url);    //Doesn't work on https
+                url = "http://".concat(url);
             GetImage getImage = new GetImage(url);
             getImage.execute();
         }
@@ -130,16 +130,35 @@ public class TabFragment3 extends Fragment {
             }
         }
     };
+
     public Bitmap getBitmapFromUrl(String urlStr) {
+        URL url;
+        Bitmap bmp;
         try {
-            URL url = new URL(urlStr);
-            return BitmapFactory.decodeStream(url.openConnection().getInputStream());
+            // First try http
+            url = new URL(urlStr);
+            bmp = BitmapFactory.decodeStream(url.openConnection().getInputStream());
+            if (bmp == null) {
+                try {
+                    // If http doesn't work, try https
+                    System.out.println("http failed, trying https...");
+                    url = new URL("https" + urlStr.substring(4));
+                    bmp = BitmapFactory.decodeStream(url.openConnection().getInputStream());
+                    return bmp;
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    System.out.println("Invalid https image URL");
+                    return null;
+                }
+            }
+            return bmp;
         } catch (Exception e) {
             e.printStackTrace();
-            System.out.println("Invalid image URL");
+            System.out.println("Invalid https image URL");
             return null;
         }
     }
+
     /*
     private class GetProcessedImage extends GetImage{
         public GetProcessedImage(String URL){
