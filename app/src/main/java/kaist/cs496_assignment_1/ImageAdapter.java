@@ -1,5 +1,6 @@
 package kaist.cs496_assignment_1;
 import android.content.Context;
+import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -44,7 +45,8 @@ public class ImageAdapter extends BaseAdapter {
         }
         else {
             imageView = new ImageView(context);
-            imageView.setLayoutParams(new GridView.LayoutParams(250, 250));
+            DisplayMetrics metrics = context.getResources().getDisplayMetrics();
+            imageView.setLayoutParams(new GridView.LayoutParams(metrics.widthPixels/3, metrics.heightPixels/6));
             imageView.setAdjustViewBounds(false);
             imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
 
