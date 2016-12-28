@@ -19,6 +19,7 @@ import static android.R.attr.height;
 
 public class ImageActivity extends Activity {
     @Override
+
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setContentView(R.layout.simple_image);

@@ -1,13 +1,23 @@
 package kaist.cs496_assignment_1;
 
+import android.Manifest;
+import android.content.DialogInterface;
+import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Matrix;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.ContactsContract;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,7 +25,14 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.net.URL;
+import java.util.HashMap;
+
+import static android.content.ContentValues.TAG;
 import static kaist.cs496_assignment_1.MyApplication.save_number;
 import static kaist.cs496_assignment_1.MyApplication.stored_bmp;
 
@@ -247,14 +264,52 @@ public class TabFragment3 extends Fragment {
     }
 
     public void save(Bitmap src){
-        MainActivity activity = (MainActivity) getActivity();
-        try {
-            String title = "saved_img_" + save_number;
-            String description = "";
-            MediaStore.Images.Media.insertImage(getActivity().getContentResolver(), src, title , description);
-            save_number++;
-            Toast.makeText(activity, "Saved", Toast.LENGTH_SHORT).show();
-        }catch(Exception e) { Toast.makeText(activity, "file error", Toast.LENGTH_SHORT).show();}
+        final MainActivity activity = (MainActivity) getActivity();
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            int permissionResult = ContextCompat.checkSelfPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+
+            if (permissionResult == PackageManager.PERMISSION_DENIED) {
+
+                if (shouldShowRequestPermissionRationale(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+
+                    AlertDialog.Builder dialog = new AlertDialog.Builder(activity);
+                    dialog.setTitle("Need permission").setMessage("To use this function, We need permission for \"WRITE_EXTERNAL_STORAGE\". Continue?").setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                                requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1001);
+                            }
+                        }
+                    }).setNegativeButton("No", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            Toast.makeText(activity, "Cancelled the function", Toast.LENGTH_SHORT).show();
+                        }
+                    }).create().show();
+                } else {
+                    requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1001);
+                }
+            } else {
+                try {
+                    String title = "saved_img_" + save_number;save_number++;
+                    String description = "";
+                    MediaStore.Images.Media.insertImage(getActivity().getContentResolver(), src, title, description);
+                    Toast.makeText(activity, "Saved", Toast.LENGTH_SHORT).show();
+                } catch (Exception e) {
+                    Toast.makeText(activity, "File Error", Toast.LENGTH_SHORT).show();
+                }
+            }
+        }
+        else {
+            try {
+                String title = "saved_img_" + save_number;save_number++;
+                String description = "";
+                MediaStore.Images.Media.insertImage(getActivity().getContentResolver(), src, title, description);
+                Toast.makeText(activity, "Saved", Toast.LENGTH_SHORT).show();
+            } catch (Exception e) {
+                Toast.makeText(activity, "File Error", Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 
     private class GetImage extends AsyncTask<Void, Void, Void> {
