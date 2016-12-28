@@ -3,14 +3,9 @@
 package kaist.cs496_assignment_1;
 
 import android.app.Application;
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.util.DisplayMetrics;
 import android.view.Display;
-
-/**
- * Created by q on 2016-12-28.
- */
 
 public class MyApplication extends Application {
     public static Bitmap stored_bmp;

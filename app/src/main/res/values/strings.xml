@@ -6,4 +6,9 @@
     <string name="imageInputHint">Input an image URL</string>
     <string name="getImageButton">GET IMAGE!</string>
     <string name="imageViewAlt">Image Viewer</string>
+    <string name="Button01Label">Grey</string>
+    <string name="Button02Label">Invert</string>
+    <string name="Button03Label">Rotate</string>
+    <string name="Button04Label">Reset</string>
+    <string name="Button05Label">Save</string>
 </resources>

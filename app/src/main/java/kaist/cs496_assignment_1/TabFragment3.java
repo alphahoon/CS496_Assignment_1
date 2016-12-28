@@ -1,13 +1,12 @@
 package kaist.cs496_assignment_1;
 
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Matrix;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Environment;
+import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,16 +15,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
-
-import java.io.File;
-import java.io.FileOutputStream;
 import java.net.URL;
-
-import static android.R.attr.bitmap;
 import static kaist.cs496_assignment_1.MyApplication.save_number;
 import static kaist.cs496_assignment_1.MyApplication.stored_bmp;
 
 public class TabFragment3 extends Fragment {
+    public Bitmap processingImg;
 
     public EditText imgURL;
     public Button imgBtn;
@@ -35,7 +30,6 @@ public class TabFragment3 extends Fragment {
     public Button button03;
     public Button button04;
     public Button button05;
-    //02 03 04 05;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -46,11 +40,14 @@ public class TabFragment3 extends Fragment {
         button01 = (Button) view.findViewById(R.id.Btn01);
         button02 = (Button) view.findViewById(R.id.Btn02);
         button03 = (Button) view.findViewById(R.id.Btn03);
+        button04 = (Button) view.findViewById(R.id.Btn04);
         button05 = (Button) view.findViewById(R.id.Btn05);
+
         imgBtn.setOnClickListener(imageBtnOnClicked);
         button01.setOnClickListener(button01OnClicked);
         button02.setOnClickListener(button02OnClicked);
-        //button03.setOnClickListener(button03OnClicked);
+        button03.setOnClickListener(button03OnClicked);
+        button04.setOnClickListener(button04OnClicked);
         button05.setOnClickListener(button05OnClicked);
 
         return view;
@@ -61,99 +58,116 @@ public class TabFragment3 extends Fragment {
         public void onClick(View v) {
             String url = imgURL.getText().toString();
             if (!url.startsWith("http://") && !url.startsWith("https://"))
-                url = "https://technofriends.files.wordpress.com/2008/07/google-test-framework.png";
-                //url = "http://".concat(url);    //Doesn't work on https
+                url = "http://".concat(url);
             GetImage getImage = new GetImage(url);
             getImage.execute();
         }
     };
+
     View.OnClickListener button01OnClicked = new View.OnClickListener(){
         @Override
         public void onClick(View v){
-            Bitmap bmp;
-            if(stored_bmp==null) {
+            if(stored_bmp == null || processingImg == null) {
                 MainActivity activity = (MainActivity) getActivity();
                 Toast.makeText(activity,"You should get the image first", Toast.LENGTH_SHORT).show();
             }
             else
             {
-                bmp=doGreyscale(stored_bmp);
-                imgView.setImageBitmap(bmp);
+                processingImg=doGreyscale(processingImg);
+                imgView.setImageBitmap(processingImg);
             }
         }
     };
+
     View.OnClickListener button02OnClicked = new View.OnClickListener(){
         @Override
         public void onClick(View v){
-            Bitmap bmp;
-            if(stored_bmp==null) {
+            if(stored_bmp == null || processingImg == null) {
                 MainActivity activity = (MainActivity) getActivity();
                 Toast.makeText(activity,"You should get the image first", Toast.LENGTH_SHORT).show();
             }
             else
             {
-                bmp=doInvert(stored_bmp);
-                imgView.setImageBitmap(bmp);
+                processingImg=doInvert(processingImg);
+                imgView.setImageBitmap(processingImg);
             }
         }
     };
-    /*
+
     View.OnClickListener button03OnClicked = new View.OnClickListener(){
         @Override
         public void onClick(View v){
-            Bitmap bmp;
-            float degree;
-            if(stored_bmp==null) {
+            float degree = 90;
+            if(stored_bmp == null || processingImg == null) {
                 MainActivity activity = (MainActivity) getActivity();
                 Toast.makeText(activity,"You should get the image first", Toast.LENGTH_SHORT).show();
             }
             else
             {
                 //Input : degree 'Message'
-                bmp=rotate(stored_bmp,degree);
-                imgView.setImageBitmap(bmp);
+                processingImg = rotate(processingImg,degree);
+                imgView.setImageBitmap(processingImg);
             }
         }
     };
-    */
-    View.OnClickListener button05OnClicked = new View.OnClickListener(){
+
+    View.OnClickListener button04OnClicked = new View.OnClickListener(){
         @Override
         public void onClick(View v){
-            Bitmap bmp;
-            if(stored_bmp==null) {
+            if(stored_bmp == null || processingImg == null) {
                 MainActivity activity = (MainActivity) getActivity();
                 Toast.makeText(activity,"You should get the image first", Toast.LENGTH_SHORT).show();
             }
             else
             {
-                save(stored_bmp);
+                processingImg = stored_bmp;
+                imgView.setImageBitmap(processingImg);
+            }
+        }
+    };
+
+    View.OnClickListener button05OnClicked = new View.OnClickListener(){
+        @Override
+        public void onClick(View v){
+            if(stored_bmp == null || processingImg == null) {
+                MainActivity activity = (MainActivity) getActivity();
+                Toast.makeText(activity,"You should get the image first", Toast.LENGTH_SHORT).show();
+            } else {
+                save(processingImg);
             }
         }
     };
 
     public Bitmap getBitmapFromUrl(String urlStr) {
+        URL url;
+        Bitmap bmp;
         try {
-            URL url = new URL(urlStr);
-            return BitmapFactory.decodeStream(url.openConnection().getInputStream());
+            // First try http
+            url = new URL(urlStr);
+            bmp = BitmapFactory.decodeStream(url.openConnection().getInputStream());
+            if (bmp == null) {
+                try {
+                    // If http doesn't work, try https
+                    System.out.println("http failed, trying https...");
+                    url = new URL("https" + urlStr.substring(4));
+                    bmp = BitmapFactory.decodeStream(url.openConnection().getInputStream());
+                    return bmp;
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Toast.makeText(getActivity(), "Invalid URL!", Toast.LENGTH_SHORT).show();
+                    System.out.println("Invalid https image URL");
+                    return null;
+                }
+            }
+            return bmp;
         } catch (Exception e) {
             e.printStackTrace();
-            System.out.println("Invalid image URL");
+            Toast.makeText(getActivity(), "Invalid URL!", Toast.LENGTH_SHORT).show();
+            System.out.println("Invalid https image URL");
             return null;
         }
     }
-    /*
-    private class GetProcessedImage extends GetImage{
-        public GetProcessedImage(String URL){
-            super(URL);
-        }
-        @Override
-        protected Void doInBackground(Void... arg0) {
-            bmp = getBitmapFromUrl(url);
-            bmp = doGreyscale(bmp);
-            return null;
-        }
-    }
-    */
+
     public static Bitmap doGreyscale(Bitmap src){
         // constant factors
         final double GS_RED = 0.299;
@@ -189,6 +203,7 @@ public class TabFragment3 extends Fragment {
         // return final image
         return bmOut;
     }
+
     public static Bitmap doInvert(Bitmap src) {
         // create new bitmap with the same settings as source bitmap
         Bitmap bmOut = Bitmap.createBitmap(src.getWidth(), src.getHeight(), src.getConfig());
@@ -219,25 +234,25 @@ public class TabFragment3 extends Fragment {
         // return final bitmap
         return bmOut;
     }
+
     public static Bitmap rotate(Bitmap src, float degree) {
         // create new matrix
         Matrix matrix = new Matrix();
+
         // setup rotation degree
         matrix.postRotate(degree);
 
         // return new bitmap rotated using matrix
         return Bitmap.createBitmap(src, 0, 0, src.getWidth(), src.getHeight(), matrix, true);
     }
+
     public void save(Bitmap src){
         MainActivity activity = (MainActivity) getActivity();
         try {
-            //File file = new File(getContext().getFilesDir(), )
-            FileOutputStream fos;
-            fos = getActivity().openFileOutput("save" + "" + save_number + "" + ".png", Context.MODE_PRIVATE);
-
-            src.compress(Bitmap.CompressFormat.PNG, 100, fos);
-            fos.flush();
-            fos.close();
+            String title = "saved_img_" + save_number;
+            String description = "";
+            MediaStore.Images.Media.insertImage(getActivity().getContentResolver(), src, title , description);
+            save_number++;
             Toast.makeText(activity, "Saved", Toast.LENGTH_SHORT).show();
         }catch(Exception e) { Toast.makeText(activity, "file error", Toast.LENGTH_SHORT).show();}
     }
@@ -258,7 +273,6 @@ public class TabFragment3 extends Fragment {
         @Override
         protected Void doInBackground(Void... arg0) {
             bmp = getBitmapFromUrl(url);
-            stored_bmp = bmp;
             return null;
         }
 
@@ -266,11 +280,12 @@ public class TabFragment3 extends Fragment {
         protected void onPostExecute(Void result) {
             super.onPostExecute(result);
             if (bmp != null) {
-                imgView.setImageBitmap(bmp);
+                stored_bmp = bmp;
+                processingImg = stored_bmp;
+                imgView.setImageBitmap(processingImg);
             } else {
                 System.out.println("Null image");
             }
         }
     }
 }
-

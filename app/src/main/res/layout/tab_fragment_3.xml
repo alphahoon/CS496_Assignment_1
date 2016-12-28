@@ -18,9 +18,17 @@
         android:background="@color/colorAccent"
         android:textColor="#FFFFFF"/>
 
+    <ImageView
+        android:id="@+id/imgView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.9"
+        android:contentDescription="@string/imageViewAlt"/>
+
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
+        android:layout_weight="0.1"
         android:orientation="horizontal"
         android:layout_gravity="bottom">
         <Button
@@ -31,7 +39,7 @@
             style="?android:attr/buttonBarButtonStyle"
             android:background="@color/colorPrimaryDark"
             android:textColor="#FFFFFF"
-            android:text="Grey"/>
+            android:text="@string/Button01Label"/>
         <Button
             android:id="@+id/Btn02"
             android:layout_width="0dp"
@@ -40,7 +48,7 @@
             style="?android:attr/buttonBarButtonStyle"
             android:background="@color/colorPrimary"
             android:textColor="#FFFFFF"
-            android:text="Invert"/>
+            android:text="@string/Button02Label"/>
         <Button
             android:id="@+id/Btn03"
             android:layout_width="0dp"
@@ -49,7 +57,7 @@
             style="?android:attr/buttonBarButtonStyle"
             android:background="@color/colorPrimaryDark"
             android:textColor="#FFFFFF"
-            android:text="Rotate"/>
+            android:text="@string/Button03Label"/>
         <Button
             android:id="@+id/Btn04"
             android:layout_width="0dp"
@@ -58,7 +66,7 @@
             style="?android:attr/buttonBarButtonStyle"
             android:background="@color/colorPrimary"
             android:textColor="#FFFFFF"
-            android:text="Btn04"/>
+            android:text="@string/Button04Label"/>
         <Button
             android:id="@+id/Btn05"
             android:layout_width="0dp"
@@ -67,15 +75,6 @@
             style="?android:attr/buttonBarButtonStyle"
             android:background="@color/colorPrimaryDark"
             android:textColor="#FFFFFF"
-            android:text="Save"/>
+            android:text="@string/Button05Label"/>
     </LinearLayout>
-
-    <ImageView
-        android:id="@+id/imgView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:contentDescription="@string/imageViewAlt"/>
-
-
-
 </LinearLayout>
