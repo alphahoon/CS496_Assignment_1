@@ -1,13 +1,20 @@
 package kaist.cs496_assignment_1;
+import android.app.Activity;
 import android.content.Context;
+import android.util.DisplayMetrics;
+import android.view.Display;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
 
 import kaist.cs496_assignment_1.ImageClickListener;
 import kaist.cs496_assignment_1.R;
+
+import static android.R.attr.height;
+import static android.R.attr.width;
 
 public class ImageAdapter extends BaseAdapter {
     private Context context;
@@ -44,7 +51,8 @@ public class ImageAdapter extends BaseAdapter {
         }
         else {
             imageView = new ImageView(context);
-            imageView.setLayoutParams(new GridView.LayoutParams(250, 250));
+            DisplayMetrics metrics = context.getResources().getDisplayMetrics();
+            imageView.setLayoutParams(new GridView.LayoutParams(metrics.widthPixels/4, metrics.heightPixels/6));
             imageView.setAdjustViewBounds(false);
             imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
 

@@ -130,6 +130,7 @@ public class TabFragment3 extends Fragment {
             }
         }
     };
+
     public Bitmap getBitmapFromUrl(String urlStr) {
         try {
             URL url = new URL(urlStr);

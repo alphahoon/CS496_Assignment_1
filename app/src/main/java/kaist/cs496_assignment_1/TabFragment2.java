@@ -1,5 +1,6 @@
 package kaist.cs496_assignment_1;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
