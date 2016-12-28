@@ -40,7 +40,9 @@ public class TabFragment3 extends Fragment {
         button01 = (Button) view.findViewById(R.id.Btn01);
         button02 = (Button) view.findViewById(R.id.Btn02);
         button03 = (Button) view.findViewById(R.id.Btn03);
+        button04 = (Button) view.findViewById(R.id.Btn04);
         button05 = (Button) view.findViewById(R.id.Btn05);
+
         imgBtn.setOnClickListener(imageBtnOnClicked);
         button01.setOnClickListener(button01OnClicked);
         button02.setOnClickListener(button02OnClicked);
@@ -118,7 +120,7 @@ public class TabFragment3 extends Fragment {
             }
             else
             {
-                // Something
+                processingImg = stored_bmp;
                 imgView.setImageBitmap(processingImg);
             }
         }
