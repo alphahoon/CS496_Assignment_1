@@ -13,7 +13,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.provider.DocumentsContract;
-import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
@@ -171,8 +170,6 @@ public class TabFragment1 extends Fragment {
             displayList();
         }
     }
-
-
 
     public void readJSONFile() {
         Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);

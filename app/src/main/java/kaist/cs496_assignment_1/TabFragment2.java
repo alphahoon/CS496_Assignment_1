@@ -1,17 +1,13 @@
 package kaist.cs496_assignment_1;
 
-import android.content.Context;
 import android.os.Bundle;
-import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.GridView;
-import android.widget.ImageView;
-public class TabFragment2 extends Fragment {    //ImageGridActivity.java
 
+public class TabFragment2 extends Fragment {
     private int[] imageIDs = new int[]{R.drawable.a,R.drawable.b,R.drawable.c,R.drawable.d,R.drawable.e,R.drawable.f,R.drawable.g,R.drawable.h,R.drawable.i,R.drawable.j};
 
     @Override
