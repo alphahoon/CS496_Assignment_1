@@ -4,6 +4,7 @@
     android:layout_height="fill_parent"
     android:orientation="vertical" >
     ﻿
+
     <GridView
         android:id="@+id/grid"
         android:layout_width="match_parent"
@@ -12,7 +13,9 @@
         android:horizontalSpacing="10dp"
         android:verticalSpacing="10dp"
         android:paddingTop="10dp"
-        android:paddingBottom="10dp">
+        android:paddingBottom="10dp"
+        android:gravity="center">
+
     </GridView>
     ﻿
 </LinearLayout>

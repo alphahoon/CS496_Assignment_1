@@ -1,15 +1,22 @@
 package kaist.cs496_assignment_1;
 
+import android.Manifest;
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.provider.DocumentsContract;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -85,31 +92,87 @@ public class TabFragment1 extends Fragment {
     }
 
     public void readContact(Context context) {
-        Cursor cursor = context.getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, null, null, null);
-        if (cursor != null) {
-            if(cursor.moveToFirst()) {
-                do {
-                    int id_idx = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.CONTACT_ID);
-                    int name_idx = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME);
-                    int mobile_idx = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER);
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            final MainActivity activity = (MainActivity) getActivity();
+            int permissionResult = ContextCompat.checkSelfPermission(activity,Manifest.permission.READ_CONTACTS);
 
-                    String id = cursor.getString(id_idx);
-                    String name = cursor.getString(name_idx);
-                    String mobile = cursor.getString(mobile_idx);
+            if (permissionResult == PackageManager.PERMISSION_DENIED) {
 
-                    HashMap<String, String> contact = new HashMap<>();
-                    contact.put("id", id);
-                    contact.put("name", name);
-                    contact.put("mobile", mobile);
+                if (shouldShowRequestPermissionRationale(Manifest.permission.READ_CONTACTS)) {
 
-                    System.out.println("id: " + id + " / name : " + name + " / mobile : " + mobile);
-                    contactList.add(contact);
-                } while (cursor.moveToNext());
+                    AlertDialog.Builder dialog = new AlertDialog.Builder(activity);
+                    dialog.setTitle("Need permission").setMessage("To use this function, We need permission for \"READ_CONTACTS\". Continue?").setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                                requestPermissions(new String[]{Manifest.permission.CALL_PHONE}, 1000);
+                            }
+                        }
+                    }).setNegativeButton("No", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            Toast.makeText(activity, "Cancelled the function", Toast.LENGTH_SHORT).show();
+                        }
+                    }).create().show();
+                } else {
+                    requestPermissions(new String[]{Manifest.permission.READ_CONTACTS}, 1000);
+                }
+            } else {
+                Cursor cursor = context.getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, null, null, null);
+                if (cursor != null) {
+                    if (cursor.moveToFirst()) {
+                        do {
+                            int id_idx = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.CONTACT_ID);
+                            int name_idx = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME);
+                            int mobile_idx = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER);
+
+                            String id = cursor.getString(id_idx);
+                            String name = cursor.getString(name_idx);
+                            String mobile = cursor.getString(mobile_idx);
+
+                            HashMap<String, String> contact = new HashMap<>();
+                            contact.put("id", id);
+                            contact.put("name", name);
+                            contact.put("mobile", mobile);
+
+                            System.out.println("id: " + id + " / name : " + name + " / mobile : " + mobile);
+                            contactList.add(contact);
+                        } while (cursor.moveToNext());
+                    }
+                    cursor.close();
+                }
+                displayList();
             }
-            cursor.close();
         }
-        displayList();
+        else {
+            Cursor cursor = context.getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, null, null, null);
+            if (cursor != null) {
+                if (cursor.moveToFirst()) {
+                    do {
+                        int id_idx = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.CONTACT_ID);
+                        int name_idx = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME);
+                        int mobile_idx = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER);
+
+                        String id = cursor.getString(id_idx);
+                        String name = cursor.getString(name_idx);
+                        String mobile = cursor.getString(mobile_idx);
+
+                        HashMap<String, String> contact = new HashMap<>();
+                        contact.put("id", id);
+                        contact.put("name", name);
+                        contact.put("mobile", mobile);
+
+                        System.out.println("id: " + id + " / name : " + name + " / mobile : " + mobile);
+                        contactList.add(contact);
+                    } while (cursor.moveToNext());
+                }
+                cursor.close();
+            }
+            displayList();
+        }
     }
+
+
 
     public void readJSONFile() {
         Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
