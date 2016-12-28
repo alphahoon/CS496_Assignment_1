@@ -31,7 +31,7 @@
             style="?android:attr/buttonBarButtonStyle"
             android:background="@color/colorPrimaryDark"
             android:textColor="#FFFFFF"
-            android:text="Btn01"/>
+            android:text="Grey"/>
         <Button
             android:id="@+id/Btn02"
             android:layout_width="0dp"
@@ -40,7 +40,7 @@
             style="?android:attr/buttonBarButtonStyle"
             android:background="@color/colorPrimary"
             android:textColor="#FFFFFF"
-            android:text="Btn02"/>
+            android:text="Invert"/>
         <Button
             android:id="@+id/Btn03"
             android:layout_width="0dp"
@@ -49,7 +49,7 @@
             style="?android:attr/buttonBarButtonStyle"
             android:background="@color/colorPrimaryDark"
             android:textColor="#FFFFFF"
-            android:text="Btn03"/>
+            android:text="Rotate"/>
         <Button
             android:id="@+id/Btn04"
             android:layout_width="0dp"
@@ -67,7 +67,7 @@
             style="?android:attr/buttonBarButtonStyle"
             android:background="@color/colorPrimaryDark"
             android:textColor="#FFFFFF"
-            android:text="Btn05"/>
+            android:text="Save"/>
     </LinearLayout>
 
     <ImageView
