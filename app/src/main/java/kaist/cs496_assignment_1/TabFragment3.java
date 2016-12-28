@@ -21,6 +21,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.URLUtil;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -74,10 +75,15 @@ public class TabFragment3 extends Fragment {
         @Override
         public void onClick(View v) {
             String url = imgURL.getText().toString();
-            if (!url.startsWith("http://") && !url.startsWith("https://"))
-                url = "http://".concat(url);
-            GetImage getImage = new GetImage(url);
-            getImage.execute();
+            if (url.equals("")) {
+                Toast.makeText(getActivity(),"Please input the image url first", Toast.LENGTH_SHORT).show();
+            } else {
+                if (!url.startsWith("http://") && !url.startsWith("https://")) {
+                    url = "http://".concat(url);
+                }
+                GetImage getImage = new GetImage(url);
+                getImage.execute();
+            }
         }
     };
 
@@ -155,33 +161,40 @@ public class TabFragment3 extends Fragment {
         }
     };
 
-    public Bitmap getBitmapFromUrl(String urlStr) {
+    public Bitmap getBitmapFromUrl(String http) {
         URL url;
         Bitmap bmp;
+        String https = "https" + http.substring(4);
         try {
-            // First try http
-            url = new URL(urlStr);
+            url = new URL(http);
             bmp = BitmapFactory.decodeStream(url.openConnection().getInputStream());
             if (bmp == null) {
                 try {
-                    // If http doesn't work, try https
-                    System.out.println("http failed, trying https...");
-                    url = new URL("https" + urlStr.substring(4));
+                    url = new URL(https);
                     bmp = BitmapFactory.decodeStream(url.openConnection().getInputStream());
+                    if (bmp == null) {
+                        return BitmapFactory.decodeResource(getContext().getResources(), R.drawable.no_image);
+                    }
                     return bmp;
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    Toast.makeText(getActivity(), "Invalid URL!", Toast.LENGTH_SHORT).show();
-                    System.out.println("Invalid https image URL");
-                    return null;
+                } catch (Exception e2) {
+                    Log.e("ERROR", "HTTPS URL", e2);
+                    return BitmapFactory.decodeResource(getContext().getResources(), R.drawable.no_image);
                 }
             }
             return bmp;
-        } catch (Exception e) {
-            e.printStackTrace();
-            Toast.makeText(getActivity(), "Invalid URL!", Toast.LENGTH_SHORT).show();
-            System.out.println("Invalid https image URL");
-            return null;
+        } catch (Exception e1) {
+            Log.e("ERROR", "HTTP URL", e1);
+            try {
+                url = new URL(https);
+                bmp = BitmapFactory.decodeStream(url.openConnection().getInputStream());
+                if (bmp == null) {
+                    return BitmapFactory.decodeResource(getContext().getResources(), R.drawable.no_image);
+                }
+                return bmp;
+            } catch (Exception e2) {
+                Log.e("ERROR", "HTTPS URL", e2);
+                return BitmapFactory.decodeResource(getContext().getResources(), R.drawable.no_image);
+            }
         }
     }
 
@@ -323,6 +336,14 @@ public class TabFragment3 extends Fragment {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
+            imgURL.setEnabled(false);
+            imgBtn.setEnabled(false);
+            button01.setEnabled(false);
+            button02.setEnabled(false);
+            button03.setEnabled(false);
+            button04.setEnabled(false);
+            button05.setEnabled(false);
+            imgBtn.setVisibility(View.INVISIBLE);
         }
 
         @Override
@@ -334,11 +355,20 @@ public class TabFragment3 extends Fragment {
         @Override
         protected void onPostExecute(Void result) {
             super.onPostExecute(result);
+            imgURL.setEnabled(true);
+            imgBtn.setEnabled(true);
+            button01.setEnabled(true);
+            button02.setEnabled(true);
+            button03.setEnabled(true);
+            button04.setEnabled(true);
+            button05.setEnabled(true);
+            imgBtn.setVisibility(View.VISIBLE);
             if (bmp != null) {
                 stored_bmp = bmp;
                 processingImg = stored_bmp;
                 imgView.setImageBitmap(processingImg);
             } else {
+                Toast.makeText(getActivity(), "Invalid URL!", Toast.LENGTH_SHORT).show();
                 System.out.println("Null image");
             }
         }
