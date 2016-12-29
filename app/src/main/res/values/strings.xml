@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">CS496_Assignment_1</string>
+    <string name="app_name">줴훈줴훈</string>
     <string name="test_string">The First Test</string>
     <string name="loadContacts">Load Contacts</string>
     <string name="loadJSON">Load JSON</string>
