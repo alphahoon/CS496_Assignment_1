@@ -67,7 +67,8 @@ public class MainActivity extends AppCompatActivity {
         List<Fragment> fragments = getSupportFragmentManager().getFragments();
         if (fragments != null) {
             for (Fragment fragment : fragments) {
-                fragment.onRequestPermissionsResult(requestCode, permissions, grantResults);
+                if (fragment != null)
+                    fragment.onRequestPermissionsResult(requestCode, permissions, grantResults);
             }
         }
     }
